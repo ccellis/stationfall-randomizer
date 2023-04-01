@@ -31,6 +31,7 @@ pub struct TemplateApp {
     global_easy_character_list: Vec<Character>,
     global_medium_character_list: Vec<Character>,
     global_hard_character_list: Vec<Character>,
+    #[serde(skip)]
     randomized_character_list: Vec<Character>,
 }
 
@@ -353,14 +354,11 @@ impl eframe::App for TemplateApp {
             ui.horizontal(|ui| {
                 ui.label("Preferred Maximum Difficulty");
                 egui::ComboBox::from_id_source(2)
-                    .selected_text(format!(
-                        "{:?}",
-                        match preferred_maximum_difficulty {
-                            Difficulty::Easy => "Easy",
-                            Difficulty::Medium => "Medium",
-                            Difficulty::Hard => "Hard",
-                        }
-                    ))
+                    .selected_text(match preferred_maximum_difficulty {
+                        Difficulty::Easy => "Easy",
+                        Difficulty::Medium => "Medium",
+                        Difficulty::Hard => "Hard",
+                    })
                     .show_ui(ui, |ui| {
                         ui.selectable_value(preferred_maximum_difficulty, Difficulty::Easy, "Easy");
                         ui.selectable_value(
@@ -390,7 +388,7 @@ impl eframe::App for TemplateApp {
             if ui.button("Pick Characters").clicked() {
                 let mut finished = false;
 
-                while finished != true {
+                while !finished {
                     randomized_character_list.truncate(0);
 
                     let mut easy_characters: Vec<Character> = global_easy_character_list.clone();
@@ -473,10 +471,8 @@ impl eframe::App for TemplateApp {
                         finished = false;
                     }
 
-                    if *at_least_two_agents_per_goal {
-                        if num_artifacts == 1 || num_briefcases == 1 || num_contaminants == 1 {
-                            finished = false;
-                        }
+                    if *at_least_two_agents_per_goal && (num_artifacts == 1 || num_briefcases == 1 || num_contaminants == 1) {
+                        finished = false;
                     }
                 }
 
