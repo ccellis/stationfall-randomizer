@@ -72,6 +72,10 @@ impl eframe::App for TemplateApp {
                 ui.text_edit_singleline(label);
             });
 
+            ui.horizontal(|ui| {
+                ui.label("Redeploying...?");
+            });
+
             ui.add(egui::Slider::new(value, 0.0..=10.0).text("value"));
             if ui.button("Increment").clicked() {
                 *value += 1.0;
