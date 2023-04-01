@@ -1,9 +1,7 @@
-use std::num;
-
-use rand::{thread_rng, random};
+use rand::{thread_rng};
 use rand::seq::SliceRandom;
 
-#[derive(serde::Deserialize, serde::Serialize, PartialEq, Debug, Clone, Eq, Ord, PartialOrd)]
+#[derive(serde::Deserialize, serde::Serialize, PartialEq, Clone, Eq, Ord, PartialOrd)]
 pub enum Difficulty {
     Easy,
     Medium,
@@ -355,7 +353,11 @@ impl eframe::App for TemplateApp {
             ui.horizontal(|ui| {
                 ui.label("Preferred Maximum Difficulty");
                 egui::ComboBox::from_id_source(2)
-                    .selected_text(format!("{:?}", preferred_maximum_difficulty))
+                    .selected_text(format!("{:?}", match preferred_maximum_difficulty{
+                        Difficulty::Easy => "Easy",
+                        Difficulty::Medium => "Medium",
+                        Difficulty::Hard => "Hard",
+                    }))
                     .show_ui(ui, |ui| {
                         ui.selectable_value(preferred_maximum_difficulty, Difficulty::Easy, "Easy");
                         ui.selectable_value(preferred_maximum_difficulty, Difficulty::Medium, "Medium");
