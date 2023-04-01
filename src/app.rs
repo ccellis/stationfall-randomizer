@@ -28,8 +28,12 @@ pub struct TemplateApp {
     at_least_one_officer: bool,
     at_least_two_agents_per_goal: bool,
     preferred_maximum_difficulty: Difficulty,
+    show_detailed_character_info: bool,
+    #[serde(skip)]
     global_easy_character_list: Vec<Character>,
+    #[serde(skip)]
     global_medium_character_list: Vec<Character>,
+    #[serde(skip)]
     global_hard_character_list: Vec<Character>,
     #[serde(skip)]
     randomized_character_list: Vec<Character>,
@@ -42,6 +46,7 @@ impl Default for TemplateApp {
             at_least_one_robot: true,
             at_least_one_officer: true,
             at_least_two_agents_per_goal: true,
+            show_detailed_character_info: false,
             preferred_maximum_difficulty: Difficulty::Easy,
             global_easy_character_list: vec![
                 Character {
@@ -52,15 +57,6 @@ impl Default for TemplateApp {
                     cares_about_briefcase: true,
                     cares_about_artifact: true,
                     wants_contamintaion: false,
-                },
-                Character {
-                    name: "Colonel".to_string(),
-                    difficulty: Difficulty::Medium,
-                    is_robot: false,
-                    is_officer: true,
-                    cares_about_briefcase: false,
-                    cares_about_artifact: false,
-                    wants_contamintaion: true,
                 },
                 Character {
                     name: "Counselor".to_string(),
@@ -177,6 +173,15 @@ impl Default for TemplateApp {
                     difficulty: Difficulty::Medium,
                     is_robot: false,
                     is_officer: false,
+                    cares_about_briefcase: false,
+                    cares_about_artifact: false,
+                    wants_contamintaion: true,
+                },
+                Character {
+                    name: "Colonel".to_string(),
+                    difficulty: Difficulty::Medium,
+                    is_robot: false,
+                    is_officer: true,
                     cares_about_briefcase: false,
                     cares_about_artifact: false,
                     wants_contamintaion: true,
@@ -328,6 +333,7 @@ impl eframe::App for TemplateApp {
             at_least_one_officer,
             at_least_two_agents_per_goal,
             preferred_maximum_difficulty,
+            show_detailed_character_info,
             global_easy_character_list,
             global_medium_character_list,
             global_hard_character_list,
@@ -385,6 +391,11 @@ impl eframe::App for TemplateApp {
                 ui.add(egui::Checkbox::without_text(at_least_two_agents_per_goal));
             });
 
+            ui.horizontal(|ui| {
+                ui.label("Show Detailed Character Info");
+                ui.add(egui::Checkbox::without_text(show_detailed_character_info));
+            });
+
             if ui.button("Pick Characters").clicked() {
                 let mut finished = false;
 
@@ -407,8 +418,6 @@ impl eframe::App for TemplateApp {
                             randomized_character_list.append(&mut easy_characters);
                             randomized_character_list.append(&mut medium_characters);
                             randomized_character_list.append(&mut hard_characters);
-
-                            randomized_character_list.truncate(*number_of_characters);
                         }
                         Difficulty::Medium => {
                             randomized_character_list.append(&mut easy_characters);
@@ -419,8 +428,6 @@ impl eframe::App for TemplateApp {
                             hard_characters.shuffle(&mut thread_rng());
 
                             randomized_character_list.append(&mut hard_characters);
-
-                            randomized_character_list.truncate(*number_of_characters);
                         }
                         Difficulty::Hard => {
                             randomized_character_list.append(&mut easy_characters);
@@ -428,10 +435,9 @@ impl eframe::App for TemplateApp {
                             randomized_character_list.append(&mut hard_characters);
 
                             randomized_character_list.shuffle(&mut thread_rng());
-
-                            randomized_character_list.truncate(*number_of_characters);
                         }
                     }
+                    randomized_character_list.truncate(*number_of_characters);
 
                     let mut num_officers = 0;
                     let mut num_robots = 0;
@@ -501,8 +507,51 @@ impl eframe::App for TemplateApp {
 
             ui.heading("Randomized Characters");
 
-            for character in &mut *randomized_character_list {
-                ui.label(character.name.as_str());
+            if !*show_detailed_character_info {
+                for character in &mut *randomized_character_list {
+                    ui.label(character.name.as_str());
+                }
+            } else {
+                egui::Grid::new("answer").striped(true).show(ui, |ui| {
+                    ui.label("");
+                    ui.label("Difficulty");
+                    ui.label("Officer");
+                    ui.label("Robot");
+                    ui.label("Artifact");
+                    ui.label("Briefcase");
+                    ui.label("Contamination");
+                    ui.end_row();
+
+                    for character in &mut *randomized_character_list {
+                        ui.label(character.name.as_str());
+                        ui.label(match character.difficulty {
+                            Difficulty::Easy => "Easy",
+                            Difficulty::Medium => "Medium",
+                            Difficulty::Hard => "Hard",
+                        });
+                        ui.label(match character.is_officer {
+                            true => "💳",
+                            false => "",
+                        });
+                        ui.label(match character.is_robot {
+                            true => "⚙",
+                            false => "",
+                        });
+                        ui.label(match character.cares_about_artifact {
+                            true => "💎",
+                            false => "",
+                        });
+                        ui.label(match character.cares_about_briefcase {
+                            true => "💼",
+                            false => "",
+                        });
+                        ui.label(match character.wants_contamintaion {
+                            true => "☣",
+                            false => "",
+                        });
+                        ui.end_row();
+                    }
+                });
             }
 
             egui::warn_if_debug_build(ui);
