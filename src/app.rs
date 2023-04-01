@@ -471,7 +471,9 @@ impl eframe::App for TemplateApp {
                         finished = false;
                     }
 
-                    if *at_least_two_agents_per_goal && (num_artifacts == 1 || num_briefcases == 1 || num_contaminants == 1) {
+                    if *at_least_two_agents_per_goal
+                        && (num_artifacts == 1 || num_briefcases == 1 || num_contaminants == 1)
+                    {
                         finished = false;
                     }
                 }
