@@ -1,11 +1,11 @@
-use rand::{thread_rng};
 use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq, Clone, Eq, Ord, PartialOrd)]
 pub enum Difficulty {
     Easy,
     Medium,
-    Hard
+    Hard,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Clone, Eq, Ord, PartialEq, PartialOrd)]
@@ -43,7 +43,7 @@ impl Default for TemplateApp {
             at_least_two_agents_per_goal: true,
             preferred_maximum_difficulty: Difficulty::Easy,
             global_easy_character_list: vec![
-                Character{
+                Character {
                     name: "Astrochimp".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -52,7 +52,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Colonel".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -61,7 +61,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: true,
                 },
-                Character{
+                Character {
                     name: "Counselor".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -70,7 +70,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Cyborg".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: true,
@@ -79,7 +79,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Daredevil".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -88,7 +88,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: true,
                 },
-                Character{
+                Character {
                     name: "Engineer".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -97,7 +97,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Exile".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -106,7 +106,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Inspector".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -115,7 +115,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Maintenance Clones".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -124,7 +124,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Medical".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: true,
@@ -133,7 +133,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Security".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: true,
@@ -142,7 +142,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Station Chief".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -151,7 +151,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Stowaway".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -160,7 +160,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Troubleshooter".to_string(),
                     difficulty: Difficulty::Easy,
                     is_robot: false,
@@ -171,7 +171,7 @@ impl Default for TemplateApp {
                 },
             ],
             global_medium_character_list: vec![
-                Character{
+                Character {
                     name: "Microbiologist".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -180,7 +180,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: true,
                 },
-                Character{
+                Character {
                     name: "Operative".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -189,7 +189,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Stranger".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -198,7 +198,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Boarder".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -207,7 +207,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Corpsicle".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -216,7 +216,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Doctor".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: false,
@@ -225,7 +225,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: true,
                     wants_contamintaion: true,
                 },
-                Character{
+                Character {
                     name: "Drones".to_string(),
                     difficulty: Difficulty::Medium,
                     is_robot: true,
@@ -236,7 +236,7 @@ impl Default for TemplateApp {
                 },
             ],
             global_hard_character_list: vec![
-                Character{
+                Character {
                     name: "Legal".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: true,
@@ -245,7 +245,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Billionaire".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: false,
@@ -254,7 +254,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Botanist".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: false,
@@ -263,7 +263,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Consort".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: true,
@@ -272,7 +272,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Digital Assistant".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: false,
@@ -281,7 +281,7 @@ impl Default for TemplateApp {
                     cares_about_artifact: false,
                     wants_contamintaion: false,
                 },
-                Character{
+                Character {
                     name: "Telepathic Rat".to_string(),
                     difficulty: Difficulty::Hard,
                     is_robot: false,
@@ -291,7 +291,7 @@ impl Default for TemplateApp {
                     wants_contamintaion: false,
                 },
             ],
-            randomized_character_list: vec![]
+            randomized_character_list: vec![],
         }
     }
 }
@@ -321,7 +321,8 @@ impl eframe::App for TemplateApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self {number_of_characters,
+        let Self {
+            number_of_characters,
             at_least_one_robot,
             at_least_one_officer,
             at_least_two_agents_per_goal,
@@ -329,7 +330,7 @@ impl eframe::App for TemplateApp {
             global_easy_character_list,
             global_medium_character_list,
             global_hard_character_list,
-            randomized_character_list
+            randomized_character_list,
         } = self;
 
         egui::SidePanel::left("side_panel").show(ctx, |ui| {
@@ -346,24 +347,29 @@ impl eframe::App for TemplateApp {
                         ui.selectable_value(number_of_characters, 17, "17 (7p)");
                         ui.selectable_value(number_of_characters, 19, "19 (8p)");
                         ui.selectable_value(number_of_characters, 20, "20 (9p)");
-                    }
-                );
+                    });
             });
 
             ui.horizontal(|ui| {
                 ui.label("Preferred Maximum Difficulty");
                 egui::ComboBox::from_id_source(2)
-                    .selected_text(format!("{:?}", match preferred_maximum_difficulty{
-                        Difficulty::Easy => "Easy",
-                        Difficulty::Medium => "Medium",
-                        Difficulty::Hard => "Hard",
-                    }))
+                    .selected_text(format!(
+                        "{:?}",
+                        match preferred_maximum_difficulty {
+                            Difficulty::Easy => "Easy",
+                            Difficulty::Medium => "Medium",
+                            Difficulty::Hard => "Hard",
+                        }
+                    ))
                     .show_ui(ui, |ui| {
                         ui.selectable_value(preferred_maximum_difficulty, Difficulty::Easy, "Easy");
-                        ui.selectable_value(preferred_maximum_difficulty, Difficulty::Medium, "Medium");
+                        ui.selectable_value(
+                            preferred_maximum_difficulty,
+                            Difficulty::Medium,
+                            "Medium",
+                        );
                         ui.selectable_value(preferred_maximum_difficulty, Difficulty::Hard, "Hard");
-                    }
-                );
+                    });
             });
 
             ui.horizontal(|ui| {
@@ -389,7 +395,8 @@ impl eframe::App for TemplateApp {
 
                     let mut easy_characters: Vec<Character> = global_easy_character_list.clone();
 
-                    let mut medium_characters: Vec<Character> = global_medium_character_list.clone();
+                    let mut medium_characters: Vec<Character> =
+                        global_medium_character_list.clone();
 
                     let mut hard_characters: Vec<Character> = global_hard_character_list.clone();
 
@@ -404,7 +411,7 @@ impl eframe::App for TemplateApp {
                             randomized_character_list.append(&mut hard_characters);
 
                             randomized_character_list.truncate(*number_of_characters);
-                        },
+                        }
                         Difficulty::Medium => {
                             randomized_character_list.append(&mut easy_characters);
                             randomized_character_list.append(&mut medium_characters);
@@ -416,7 +423,7 @@ impl eframe::App for TemplateApp {
                             randomized_character_list.append(&mut hard_characters);
 
                             randomized_character_list.truncate(*number_of_characters);
-                        },
+                        }
                         Difficulty::Hard => {
                             randomized_character_list.append(&mut easy_characters);
                             randomized_character_list.append(&mut medium_characters);
@@ -425,7 +432,7 @@ impl eframe::App for TemplateApp {
                             randomized_character_list.shuffle(&mut thread_rng());
 
                             randomized_character_list.truncate(*number_of_characters);
-                        },
+                        }
                     }
 
                     let mut num_officers = 0;
@@ -472,7 +479,7 @@ impl eframe::App for TemplateApp {
                         }
                     }
                 }
-                
+
                 randomized_character_list.sort();
             }
 
@@ -499,7 +506,7 @@ impl eframe::App for TemplateApp {
             for character in &mut *randomized_character_list {
                 ui.label(character.name.as_str());
             }
-            
+
             egui::warn_if_debug_build(ui);
         });
     }
