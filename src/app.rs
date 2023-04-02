@@ -1,3 +1,4 @@
+use core::cmp::Ordering;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
@@ -8,15 +9,43 @@ pub enum Difficulty {
     Hard,
 }
 
-#[derive(serde::Deserialize, serde::Serialize, Clone, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(serde::Deserialize, serde::Serialize, PartialEq, Clone, Eq, Ord, PartialOrd)]
+pub enum AggressionLevel {
+    Peaceful,
+    Random,
+    Aggressive,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 pub struct Character {
     pub name: String,
     pub difficulty: Difficulty,
+    pub aggression: f32,
     pub is_robot: bool,
     pub is_officer: bool,
     pub cares_about_briefcase: bool,
     pub cares_about_artifact: bool,
     pub wants_contamintaion: bool,
+}
+
+impl Eq for Character {}
+
+impl Ord for Character {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.name.cmp(&other.name)
+    }
+}
+
+impl PartialOrd for Character {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Character {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+    }
 }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
@@ -28,7 +57,9 @@ pub struct TemplateApp {
     at_least_one_officer: bool,
     at_least_two_agents_per_goal: bool,
     preferred_maximum_difficulty: Difficulty,
+    preferred_aggression_level: AggressionLevel,
     show_detailed_character_info: bool,
+    found_character_list: bool,
     #[serde(skip)]
     global_easy_character_list: Vec<Character>,
     #[serde(skip)]
@@ -42,16 +73,19 @@ pub struct TemplateApp {
 impl Default for TemplateApp {
     fn default() -> Self {
         Self {
-            number_of_characters: 12,
+            number_of_characters: 15,
             at_least_one_robot: true,
             at_least_one_officer: true,
             at_least_two_agents_per_goal: true,
+            preferred_maximum_difficulty: Difficulty::Hard,
+            preferred_aggression_level: AggressionLevel::Random,
             show_detailed_character_info: false,
-            preferred_maximum_difficulty: Difficulty::Easy,
+            found_character_list: true,
             global_easy_character_list: vec![
                 Character {
                     name: "Astrochimp".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -61,6 +95,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Counselor".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -70,6 +105,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Cyborg".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 1.0,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -79,6 +115,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Daredevil".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -88,6 +125,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Engineer".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -97,6 +135,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Exile".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -106,6 +145,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Inspector".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.5,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -115,6 +155,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Maintenance Clones".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.5,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -124,6 +165,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Medical".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.0,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -133,6 +175,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Security".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 1.0,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -142,6 +185,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Station Chief".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -151,6 +195,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Stowaway".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -160,6 +205,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Troubleshooter".to_string(),
                     difficulty: Difficulty::Easy,
+                    aggression: 0.5,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -171,6 +217,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Microbiologist".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -180,6 +227,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Colonel".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.5,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -189,6 +237,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Operative".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -198,6 +247,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Stranger".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -207,6 +257,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Boarder".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -216,6 +267,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Corpsicle".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.5,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -225,6 +277,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Doctor".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -234,6 +287,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Drones".to_string(),
                     difficulty: Difficulty::Medium,
+                    aggression: 0.5,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -245,6 +299,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Legal".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 0.0,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -254,6 +309,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Billionaire".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -263,6 +319,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Botanist".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: false,
@@ -272,6 +329,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Consort".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 0.0,
                     is_robot: true,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -281,6 +339,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Digital Assistant".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 0.0,
                     is_robot: false,
                     is_officer: true,
                     cares_about_briefcase: false,
@@ -290,6 +349,7 @@ impl Default for TemplateApp {
                 Character {
                     name: "Telepathic Rat".to_string(),
                     difficulty: Difficulty::Hard,
+                    aggression: 1.0,
                     is_robot: false,
                     is_officer: false,
                     cares_about_briefcase: true,
@@ -333,7 +393,9 @@ impl eframe::App for TemplateApp {
             at_least_one_officer,
             at_least_two_agents_per_goal,
             preferred_maximum_difficulty,
+            preferred_aggression_level,
             show_detailed_character_info,
+            found_character_list,
             global_easy_character_list,
             global_medium_character_list,
             global_hard_character_list,
@@ -377,6 +439,33 @@ impl eframe::App for TemplateApp {
             });
 
             ui.horizontal(|ui| {
+                ui.label("Preferred Aggression Level");
+                egui::ComboBox::from_id_source(3)
+                    .selected_text(match preferred_aggression_level {
+                        AggressionLevel::Aggressive => "Aggressive",
+                        AggressionLevel::Random => "Random",
+                        AggressionLevel::Peaceful => "Peaceful",
+                    })
+                    .show_ui(ui, |ui| {
+                        ui.selectable_value(
+                            preferred_aggression_level,
+                            AggressionLevel::Aggressive,
+                            "Aggressive",
+                        );
+                        ui.selectable_value(
+                            preferred_aggression_level,
+                            AggressionLevel::Random,
+                            "Random",
+                        );
+                        ui.selectable_value(
+                            preferred_aggression_level,
+                            AggressionLevel::Peaceful,
+                            "Peaceful",
+                        );
+                    });
+            });
+
+            ui.horizontal(|ui| {
                 ui.label("At Least One Officer");
                 ui.add(egui::Checkbox::without_text(at_least_one_officer));
             });
@@ -387,7 +476,7 @@ impl eframe::App for TemplateApp {
             });
 
             ui.horizontal(|ui| {
-                ui.label("At Least Two Characters Per Goal");
+                ui.label("At Least Two Characters Per Goal ");
                 ui.add(egui::Checkbox::without_text(at_least_two_agents_per_goal));
             });
 
@@ -398,9 +487,15 @@ impl eframe::App for TemplateApp {
 
             if ui.button("Pick Characters").clicked() {
                 let mut finished = false;
+                let mut num_tries = 0;
 
                 while !finished {
                     randomized_character_list.truncate(0);
+
+                    num_tries += 1;
+                    if num_tries > 1000 {
+                        break;
+                    }
 
                     let mut easy_characters: Vec<Character> = global_easy_character_list.clone();
 
@@ -444,6 +539,7 @@ impl eframe::App for TemplateApp {
                     let mut num_artifacts = 0;
                     let mut num_briefcases = 0;
                     let mut num_contaminants = 0;
+                    let mut aggresssion = 0.0;
 
                     for character in &mut *randomized_character_list {
                         if character.is_officer {
@@ -465,6 +561,8 @@ impl eframe::App for TemplateApp {
                         if character.wants_contamintaion {
                             num_contaminants += 1;
                         }
+
+                        aggresssion += character.aggression;
                     }
 
                     finished = true;
@@ -482,9 +580,24 @@ impl eframe::App for TemplateApp {
                     {
                         finished = false;
                     }
+
+                    aggresssion /= *number_of_characters as f32;
+
+                    if (*preferred_aggression_level == AggressionLevel::Aggressive
+                        && aggresssion < 0.43)
+                        || (*preferred_aggression_level == AggressionLevel::Peaceful
+                            && aggresssion > 0.43)
+                    {
+                        finished = false;
+                    }
                 }
 
-                randomized_character_list.sort();
+                if num_tries > 1000 {
+                    *found_character_list = false;
+                } else {
+                    randomized_character_list.sort();
+                    *found_character_list = true;
+                }
             }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
@@ -506,52 +619,58 @@ impl eframe::App for TemplateApp {
             // The central panel the region left after adding TopPanel's and SidePanel's
 
             ui.heading("Randomized Characters");
-
-            if !*show_detailed_character_info {
-                for character in &mut *randomized_character_list {
-                    ui.label(character.name.as_str());
-                }
-            } else {
-                egui::Grid::new("answer").striped(true).show(ui, |ui| {
-                    ui.label("");
-                    ui.label("Difficulty");
-                    ui.label("Officer");
-                    ui.label("Robot");
-                    ui.label("Artifact");
-                    ui.label("Briefcase");
-                    ui.label("Contamination");
-                    ui.end_row();
-
+            if *found_character_list && !randomized_character_list.is_empty() {
+                if !*show_detailed_character_info {
                     for character in &mut *randomized_character_list {
                         ui.label(character.name.as_str());
-                        ui.label(match character.difficulty {
-                            Difficulty::Easy => "Easy",
-                            Difficulty::Medium => "Medium",
-                            Difficulty::Hard => "Hard",
-                        });
-                        ui.label(match character.is_officer {
-                            true => "💳",
-                            false => "",
-                        });
-                        ui.label(match character.is_robot {
-                            true => "⚙",
-                            false => "",
-                        });
-                        ui.label(match character.cares_about_artifact {
-                            true => "💎",
-                            false => "",
-                        });
-                        ui.label(match character.cares_about_briefcase {
-                            true => "💼",
-                            false => "",
-                        });
-                        ui.label(match character.wants_contamintaion {
-                            true => "☣",
-                            false => "",
-                        });
-                        ui.end_row();
                     }
-                });
+                } else {
+                    egui::Grid::new("answer").striped(true).show(ui, |ui| {
+                        ui.label("");
+                        ui.label("Difficulty");
+                        ui.label("Officer");
+                        ui.label("Robot");
+                        ui.label("Artifact");
+                        ui.label("Briefcase");
+                        ui.label("Contamination");
+                        ui.label("Aggression");
+                        ui.end_row();
+
+                        for character in &mut *randomized_character_list {
+                            ui.label(character.name.as_str());
+                            ui.label(match character.difficulty {
+                                Difficulty::Easy => "Easy",
+                                Difficulty::Medium => "Medium",
+                                Difficulty::Hard => "Hard",
+                            });
+                            ui.label(match character.is_officer {
+                                true => "💳",
+                                false => "",
+                            });
+                            ui.label(match character.is_robot {
+                                true => "⚙",
+                                false => "",
+                            });
+                            ui.label(match character.cares_about_artifact {
+                                true => "💎",
+                                false => "",
+                            });
+                            ui.label(match character.cares_about_briefcase {
+                                true => "💼",
+                                false => "",
+                            });
+                            ui.label(match character.wants_contamintaion {
+                                true => "☣",
+                                false => "",
+                            });
+                            ui.label(character.aggression.to_string());
+                            ui.end_row();
+                        }
+                    });
+                }
+            } else if !*found_character_list {
+                ui.label("Could not find character list with given parameters.");
+                ui.label("Adjust maximum difficulty or aggression.");
             }
 
             egui::warn_if_debug_build(ui);
