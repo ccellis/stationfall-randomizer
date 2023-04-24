@@ -324,7 +324,7 @@ impl Default for TemplateApp {
                     is_officer: false,
                     cares_about_briefcase: false,
                     cares_about_artifact: false,
-                    wants_contamintaion: false,
+                    wants_contamintaion: true,
                 },
                 Character {
                     name: "Consort".to_string(),
